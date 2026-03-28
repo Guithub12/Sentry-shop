@@ -7,6 +7,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@300&display=swap');
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --bg-color: #000000;
             --card-bg: rgba(10, 10, 10, 0.8);
@@ -16,8 +22,6 @@
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
             width: 100%;
             min-height: 100%;
             background-color: var(--bg-color);
@@ -27,7 +31,7 @@
             scroll-behavior: smooth;
         }
 
-        /* Navigation Bar */
+        /* Navigation Bar Enhanced with Dropdown */
         .nav-bar {
             position: fixed;
             top: 0;
@@ -35,7 +39,11 @@
             padding: 35px 50px;
             display: flex;
             gap: 40px;
-            z-index: 50;
+            z-index: 100;
+        }
+
+        .nav-item {
+            position: relative;
         }
 
         .nav-btn {
@@ -49,6 +57,9 @@
             display: inline-block;
             position: relative;
             transition: color 0.3s;
+            background: none;
+            border: none;
+            padding: 0;
         }
 
         .nav-btn::after {
@@ -62,14 +73,53 @@
             transition: width 0.4s ease-out;
         }
 
-        .nav-btn:hover {
-            color: #ffffff;
-        }
-
         .nav-btn:hover::after {
             width: 100%;
             right: auto;
             left: 0;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            min-width: 180px;
+            padding: 12px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            z-index: 101;
+        }
+
+        .nav-item:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 24px;
+            color: var(--neon-grey);
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            padding-left: 28px;
         }
 
         /* Enhanced Star Canvas */
@@ -388,7 +438,7 @@
             inset: 0;
             background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(10px);
-            z-index: 100;
+            z-index: 200;
             animation: fadeIn 0.3s;
         }
 
@@ -407,7 +457,7 @@
             border-radius: 30px;
             border: 2px solid var(--border-color);
             text-align: center;
-            z-index: 101;
+            z-index: 201;
             width: 350px;
             box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
             animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -435,35 +485,32 @@
                 font-size: 2.5rem;
                 letter-spacing: 10px;
             }
-
             .grid {
                 grid-template-columns: 1fr;
             }
-
             .btn-action {
                 padding: 15px 40px;
                 font-size: 0.85rem;
             }
-
             .about-section {
                 padding: 40px 25px;
             }
-
             .nav-bar {
                 padding: 25px 30px;
                 gap: 25px;
             }
-
             .nav-btn {
                 font-size: 0.75rem;
             }
-
             .pricing-section {
                 padding: 40px 25px;
             }
-
             .price-tag {
                 font-size: 2.5rem;
+            }
+            .dropdown-menu {
+                min-width: 160px;
+                right: -10px;
             }
         }
     </style>
@@ -472,70 +519,22 @@
 
 <canvas id="starCanvas"></canvas>
 
-<!-- Navigation Bar -->
+<!-- Navigation Bar with Products Dropdown -->
 <div class="nav-bar">
-    <a href="#top" class="nav-btn">Buy</a>
+    <a href="#top" class="nav-btn" data-product="rat">Buy</a>
+    <div class="nav-item">
+        <button class="nav-btn" style="background: none; cursor: pointer;">Products</button>
+        <div class="dropdown-menu">
+            <a href="#" class="dropdown-item" data-product="rat">SENTRY RAT</a>
+            <a href="#" class="dropdown-item" data-product="stealer">SENTRY Stealer</a>
+        </div>
+    </div>
     <a href="#about" class="nav-btn">About Us</a>
     <a href="#pricing" class="nav-btn">Prices</a>
 </div>
 
-<div class="main-wrapper" id="top">
-    <h1>SENTRY</h1>
-    <div class="tagline">Advanced Red Team Administration</div>
-
-    <div class="grid">
-        <div class="card">
-            <h3>Undetected Execution</h3>
-            <p>Utilizes <strong>Heaven's Gate</strong> for x86/x64 architecture switching and a <strong>userland rootkit</strong> for advanced process cloaking.</p>
-        </div>
-        <div class="card">
-            <h3>Privilege Elevation</h3>
-            <p>Built-in <strong>UAC Bypass</strong> mechanisms designed for stealthy high-integrity deployment in restricted environments.</p>
-        </div>
-    </div>
-
-    <button class="btn-action" onclick="openPortal()">Initialize License</button>
-
-    <!-- About Us Section -->
-    <div class="about-section" id="about">
-        <h2>About Us</h2>
-        <p>SENTRY represents the pinnacle of red team engineering—meticulously crafted for professionals who demand uncompromising quality and operational security. Every component has been battle-tested in real-world scenarios, ensuring reliability when it matters most.</p>
-        
-        <div class="quality-grid">
-            <div class="quality-item">
-                <h4>Military-Grade</h4>
-                <p>Built with the same rigor and precision expected in high-stakes operations</p>
-            </div>
-            <div class="quality-item">
-                <h4>Zero Compromise</h4>
-                <p>No shortcuts, no detection vectors—engineered for absolute stealth</p>
-            </div>
-            <div class="quality-item">
-                <h4>Continuous Evolution</h4>
-                <p>Regular updates to stay ahead of detection mechanisms and security patches</p>
-            </div>
-        </div>
-        
-        <p style="margin-top: 30px;">Trusted by elite security teams worldwide, SENTRY delivers the performance and discretion that separates professional operations from amateur attempts. Our commitment to excellence is reflected in every line of code.</p>
-    </div>
-
-    <!-- Pricing Section -->
-    <div class="pricing-section" id="pricing">
-        <h2>Pricing</h2>
-        <div class="pricing-card">
-            <div class="price-label">Lifetime Access</div>
-            <div class="price-tag">€50<span></span></div>
-            <div class="price-features">
-                <div class="price-feature">Lifetime subscription with no recurring fees</div>
-                <div class="price-feature">Full access to all current features</div>
-                <div class="price-feature">Regular security updates included</div>
-                <div class="price-feature">Priority technical support</div>
-                <div class="price-feature">Future feature updates at no cost</div>
-            </div>
-            <button class="btn-action" onclick="openPortal()" style="margin-top: 20px;">Purchase Now</button>
-        </div>
-    </div>
-</div>
+<!-- Dynamic Content Wrapper -->
+<div id="app-root"></div>
 
 <div class="modal-overlay" id="overlay" onclick="closePortal()">
     <div class="modal" onclick="event.stopPropagation()">
@@ -546,7 +545,7 @@
 </div>
 
 <script>
-    // Enhanced Particle / Star Logic with Glow
+    // Enhanced Star Canvas Logic
     const canvas = document.getElementById('starCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -571,14 +570,10 @@
         update() {
             this.x += this.speedX;
             this.y += this.speedY;
-            
-            // Wrap around edges
             if (this.x > canvas.width) this.x = 0;
             if (this.x < 0) this.x = canvas.width;
             if (this.y > canvas.height) this.y = 0;
             if (this.y < 0) this.y = canvas.height;
-            
-            // Pulsing effect
             this.pulsePhase += this.pulseSpeed;
         }
         
@@ -586,19 +581,14 @@
             const pulse = Math.sin(this.pulsePhase) * 0.3 + 0.7;
             const currentOpacity = this.opacity * pulse;
             const currentSize = this.size * pulse;
-            
-            // Outer glow
             const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, currentSize * 8);
             gradient.addColorStop(0, `rgba(255, 255, 255, ${currentOpacity * 0.8})`);
             gradient.addColorStop(0.2, `rgba(255, 255, 255, ${currentOpacity * 0.3})`);
             gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            
             ctx.fillStyle = gradient;
             ctx.beginPath();
             ctx.arc(this.x, this.y, currentSize * 8, 0, Math.PI * 2);
             ctx.fill();
-            
-            // Inner bright star
             ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity})`;
             ctx.shadowBlur = 15;
             ctx.shadowColor = 'white';
@@ -617,13 +607,13 @@
         }
     }
 
-    function animate() {
+    function animateStars() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => {
             p.update();
             p.draw();
         });
-        requestAnimationFrame(animate);
+        requestAnimationFrame(animateStars);
     }
 
     window.addEventListener('resize', () => {
@@ -633,7 +623,7 @@
     
     initCanvas();
     createParticles();
-    animate();
+    animateStars();
 
     // Modal Logic
     function openPortal() {
@@ -643,6 +633,262 @@
     function closePortal() {
         document.getElementById('overlay').style.display = 'none';
     }
+    window.openPortal = openPortal;
+    window.closePortal = closePortal;
+
+    // ---------- PAGE RENDERING ENGINE ----------
+    const appRoot = document.getElementById('app-root');
+    
+    // RAT Page with exact specifications: Price €500, Features as listed
+    function renderRatPage() {
+        return `
+            <div class="main-wrapper" id="top">
+                <h1>SENTRY RAT</h1>
+                <div class="tagline">Advanced Remote Administration Terminal</div>
+
+                <div class="grid">
+                    <div class="card">
+                        <h3>🔐 AES-256-GCM Encrypted Communication</h3>
+                        <p>Military-grade encryption securing all C2 traffic with authenticated encryption, preventing interception and analysis.</p>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Unpatched UAC Bypass</h3>
+                        <p>Working on Windows 10 and Windows 11. Achieves high-integrity execution without user consent prompts.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🛡️ AV Evasion</h3>
+                        <p>Successfully evades Windows Defender, Malwarebytes and other leading Anti-Virus solutions through advanced obfuscation and behavioral bypass.</p>
+                    </div>
+                    <div class="card">
+                        <h3>💾 Credential Exfiltration</h3>
+                        <p>Integrated Sentry Stealer module enables full credential harvesting, browser data extraction, and session token theft.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔄 Persistence & Survivability</h3>
+                        <p>Survives reboots with advanced persistence mechanisms. Can survive Windows resets and reinstallations if Secure Boot is disabled.</p>
+                    </div>
+                    <div class="card">
+                        <h3>⚙️ Operational Depth</h3>
+                        <p>Full-featured RAT with file system access, remote shell, keylogging, and screen capture capabilities.</p>
+                    </div>
+                </div>
+
+                <button class="btn-action" onclick="openPortal()">Initialize RAT License</button>
+
+                <div class="about-section" id="about">
+                    <h2>About SENTRY RAT</h2>
+                    <p>SENTRY RAT represents the pinnacle of red team engineering—meticulously crafted for professionals who demand uncompromising quality and operational security. Every component has been battle-tested in real-world scenarios, ensuring reliability when it matters most. The inclusion of Sentry Stealer technology provides unparalleled credential extraction capabilities.</p>
+                    
+                    <div class="quality-grid">
+                        <div class="quality-item">
+                            <h4>AES-256-GCM</h4>
+                            <p>All traffic encrypted with authenticated encryption, preventing MITM and traffic analysis</p>
+                        </div>
+                        <div class="quality-item">
+                            <h4>Unpatched UAC Bypass</h4>
+                            <p>Confirmed working on latest Windows 10/11 builds without detection</p>
+                        </div>
+                        <div class="quality-item">
+                            <h4>Persistence Engine</h4>
+                            <p>Survives reboots, resets, and even OS reinstallation (Secure Boot disabled)</p>
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 30px;">Trusted by elite security teams worldwide. The integrated Stealer module alone justifies the premium — offering capabilities that exceed standalone stealers in the market.</p>
+                </div>
+
+                <div class="pricing-section" id="pricing">
+                    <h2>Pricing</h2>
+                    <div class="pricing-card">
+                        <div class="price-label">Lifetime RAT License</div>
+                        <div class="price-tag">€500<span></span></div>
+                        <div class="price-features">
+                            <div class="price-feature">AES-256-GCM encrypted C2 communication</div>
+                            <div class="price-feature">Unpatched UAC bypass (Win10/Win11)</div>
+                            <div class="price-feature">Evades Windows Defender, Malwarebytes, major AVs</div>
+                            <div class="price-feature">Integrated Sentry Stealer (credential exfiltration)</div>
+                            <div class="price-feature">Persistence: survives reboots & Windows resets (if Secure Boot disabled)</div>
+                            <div class="price-feature">Lifetime updates & priority support</div>
+                        </div>
+                        <button class="btn-action" onclick="openPortal()" style="margin-top: 20px;">Purchase RAT</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Stealer Page with exact specifications: Price €400, Features as listed
+    function renderStealerPage() {
+        return `
+            <div class="main-wrapper" id="top">
+                <h1 style="letter-spacing: 12px;">SENTRY STEALER</h1>
+                <div class="tagline">Covert Intelligence Extraction Framework</div>
+
+                <div class="grid">
+                    <div class="card">
+                        <h3>🔐 AES-256-GCM Encrypted Communication</h3>
+                        <p>Military-grade encryption for all exfiltration channels. Prevents payload interception and ensures operational security.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔓 App-Bound Encryption Bypass</h3>
+                        <p>Defeats Chrome's App-Bound Encryption (ABE), ensuring full credential extraction on the most updated Chrome instances. Works on latest browser versions.</p>
+                    </div>
+                    <div class="card">
+                        <h3>💿 Survivability Engine</h3>
+                        <p>Can survive Windows resets and reinstallations if Secure Boot is disabled. Maintains foothold through advanced persistence techniques.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🌐 Multi-Browser & Wallet Support</h3>
+                        <p>Extracts credentials, cookies, payment info, and crypto wallets from Chromium-based browsers and Firefox.</p>
+                    </div>
+                </div>
+
+                <button class="btn-action" onclick="openPortal()">Acquire Stealer License</button>
+
+                <div class="about-section" id="about" style="margin-top: 30px;">
+                    <h2>Engineered for Elite Red Teams</h2>
+                    <p>SENTRY Stealer is the next evolution in information theft frameworks. Designed for professional red teamers, it combines cutting-edge bypass techniques with surgical precision. The App-Bound Encryption bypass module is continuously updated to remain effective against the latest Chrome defenses.</p>
+                    
+                    <div class="quality-grid">
+                        <div class="quality-item">
+                            <h4>App-Bound Bypass</h4>
+                            <p>Defeats Chrome's App-Bound Encryption (ABE) on the most updated instances. No other stealer offers this level of compatibility.</p>
+                        </div>
+                        <div class="quality-item">
+                            <h4>AES-256-GCM Secure</h4>
+                            <p>All exfiltration uses authenticated encryption, leaving zero traces for network analysts.</p>
+                        </div>
+                        <div class="quality-item">
+                            <h4>Resilient Persistence</h4>
+                            <p>Survives Windows resets and even OS reinstallations when Secure Boot is disabled.</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: 25px; text-align: center;">⚡ Designed for red team operations where credentials are the primary objective.</p>
+                </div>
+
+                <div class="pricing-section" id="pricing">
+                    <h2>Stealer Licensing</h2>
+                    <div class="pricing-card">
+                        <div class="price-label">Lifetime Stealer License</div>
+                        <div class="price-tag">€400<span></span></div>
+                        <div class="price-features">
+                            <div class="price-feature">AES-256-GCM encrypted communication channel</div>
+                            <div class="price-feature">App-Bound Encryption bypass (updated Chrome instances)</div>
+                            <div class="price-feature">Survives Windows resets & reinstallations (if Secure Boot disabled)</div>
+                            <div class="price-feature">Full browser credential & cookie extraction</div>
+                            <div class="price-feature">Cryptocurrency wallet harvesting</div>
+                            <div class="price-feature">Lifetime updates & dedicated support</div>
+                        </div>
+                        <button class="btn-action" onclick="openPortal()" style="margin-top: 20px;">Purchase Stealer</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // State management
+    let currentProduct = 'rat';
+
+    function updatePage(product) {
+        currentProduct = product;
+        if (product === 'rat') {
+            appRoot.innerHTML = renderRatPage();
+        } else if (product === 'stealer') {
+            appRoot.innerHTML = renderStealerPage();
+        }
+        
+        // Re-bind navigation and buttons after content update
+        setTimeout(() => {
+            // Bind all btn-action to modal
+            document.querySelectorAll('.btn-action').forEach(btn => {
+                if (!btn.getAttribute('data-bound')) {
+                    btn.setAttribute('data-bound', 'true');
+                    btn.onclick = (e) => { openPortal(); };
+                }
+            });
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && href !== '#') {
+                        e.preventDefault();
+                        const targetId = href.substring(1);
+                        const target = document.getElementById(targetId);
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        }, 20);
+    }
+
+    // Navigation handlers
+    function initNavigation() {
+        const ratLink = document.querySelector('.dropdown-item[data-product="rat"]');
+        const stealerLink = document.querySelector('.dropdown-item[data-product="stealer"]');
+        
+        if (ratLink) {
+            ratLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                updatePage('rat');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+        if (stealerLink) {
+            stealerLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                updatePage('stealer');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+        
+        // Buy button nav
+        const buyNav = document.querySelector('.nav-btn[data-product="rat"]');
+        if (buyNav) {
+            buyNav.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentProduct !== 'rat') {
+                    updatePage('rat');
+                }
+                setTimeout(() => {
+                    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' });
+                }, 50);
+            });
+        }
+        
+        // About Us and Prices smooth scroll
+        const aboutNav = document.querySelector('a.nav-btn[href="#about"]');
+        const pricesNav = document.querySelector('a.nav-btn[href="#pricing"]');
+        if (aboutNav) {
+            aboutNav.addEventListener('click', (e) => {
+                e.preventDefault();
+                const aboutEl = document.getElementById('about');
+                if (aboutEl) aboutEl.scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+        if (pricesNav) {
+            pricesNav.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pricingEl = document.getElementById('pricing');
+                if (pricingEl) pricingEl.scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+    }
+
+    // Initial render
+    updatePage('rat');
+    setTimeout(initNavigation, 100);
+    
+    // Mutation observer for dynamically added buttons
+    const observer = new MutationObserver(() => {
+        document.querySelectorAll('.btn-action').forEach(btn => {
+            if (!btn.getAttribute('data-bound')) {
+                btn.setAttribute('data-bound', 'true');
+                btn.onclick = (e) => { openPortal(); };
+            }
+        });
+    });
+    observer.observe(appRoot, { childList: true, subtree: true });
 </script>
 
 </body>
